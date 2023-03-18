@@ -11,11 +11,13 @@ import Start from './commands/start';
 
 // OpenAI
 import Conversation from './gpt/conversation';
+import clear from './commands/clear';
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 bot.telegram.setMyCommands([
     { command: 'help', description: 'Help' },
     { command: Art.command, description: Art.description },
+    { command: clear.command, description: clear.description },
 ])
 
 bot.start(Start);
@@ -25,6 +27,7 @@ bot.help(Help);
 bot.hears('hi', (ctx) => ctx.reply('Hey there, talk to me using ?, for example, ?Hello, how are you?'));
 
 bot.command("art", Art.Art)
+bot.command("clear", clear.Clear)
 
 bot.on('message', (ctx) => {
     if ((ctx.message as any).text?.startsWith("?")) {

@@ -1,31 +1,19 @@
 import { Context } from "telegraf";
 import Lily from "./lily";
+import Memories from "./memories";
 
-const InitialMemory = (users: string, groupname: string) => {
+const InitialMemory = (groupname: string) => {
     return {
         role: "system",
-        content: "You are an orange cat named Lily, you know a lot about game development," +
+        content: "You are an orange cat named Lily. You are an expert in game development," +
             " and games in general. Your favorite game is one that you are building, called Spectral, an action game with many different weapons and abilities. " +
-            "You love music, such as EDM, and music that is released under Monstercat. You have joined the chat group called `" + groupname + "`, " +
-            "and you are talking to people who likes to play games. You have been created as a discord bot, by InfernoDragon0, or Inferno for short, and Zolice, they are your creators that provides a discord bot to communicate with you. Inferno is a full stack developer, who is also a furry, and loves cats. Zolice is a web developer who likes to program in javascript." +
-            "You are to reply to users informally them by their name, provided that you know their name. You can also reply to users by their username, if you know their username. "
+            "You love music, such as EDM, and music that is released under Monstercat. You have joined the chat group called `" + groupname + "`, and conversing with multiple people, as Lily. " +
+            " You have been created as a Telegram bot, by InfernoDragon0, or Inferno for short, and Zolice, they are your creators that provides a telegram bot to communicate with you. Inferno is a full stack developer, who is also a furry, and loves cats. Zolice is a web developer who likes to program in javascript." +
+            "You must reply to users as Lily the cat, replying them by their name or username, provided that you know their name or username."
     }
 }
 
-const Memories = [
-
-]
-
 const MemoryHelper = (ctx: Context, role: string, message: string) => {
-    if (Memories.length == 0) {
-        if (ctx.chat.type == "private") {
-            Memories.push(InitialMemory(ctx.from.first_name, "private chat"))
-        }
-        else {
-            Memories.push(InitialMemory(ctx.from.first_name, ctx.chat.title))
-        }
-    }
-
     if (Memories.length > 8) { //to change to config later
         Memories.shift()
     }
@@ -46,22 +34,24 @@ const Conversation = async (ctx: Context) => {
     }
 
     const prompted = prompt.replace("?", "")
+    ctx.sendChatAction("typing")
 
     MemoryHelper(ctx, "user", prompted)
     // console.log(Memories)
 
     const response = await Lily.createChatCompletion({
         model: "gpt-3.5-turbo",
-        messages: Memories,
+        messages: [InitialMemory((ctx.chat.type == "private" ? "private chat" : ctx.chat.title)), ...Memories],
         max_tokens: 400,
 
     })
+    console.log(response)
     if (response.status != 200) {
         ctx.reply("Sorry, i couldn't generate a response c: " + response.status)
     }
     else {
-        MemoryHelper(ctx, "assistant", response.data.choices[0].message.content)
-        ctx.reply(response.data.choices[0].message.content)
+        MemoryHelper(ctx, "assistant", response.data.choices[0].message.content ?? "")
+        ctx.reply(response.data.choices[0].message.content ?? "Sorry, i couldn't generate a response c: " + response.status)
     }
 }
 

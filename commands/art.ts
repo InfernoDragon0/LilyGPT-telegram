@@ -5,7 +5,8 @@ const Art = (ctx: Context) => {
     const commandData = (ctx.message as any).text.split(" ").slice(1).join(" ")
     if (commandData.length > 0) {
         console.log(commandData)
-        ctx.reply(`Please wait while i draw you a "${commandData}"`)
+        // ctx.reply(`Please wait while i draw you a "${commandData}"`)
+        ctx.telegram.sendChatAction(ctx.chat.id, "upload_photo")
         GenerateArt(commandData, ctx.from.username).then((response) => {
             if (response.startsWith("Sorry")) {
                 ctx.reply(response)
@@ -14,6 +15,7 @@ const Art = (ctx: Context) => {
 
             //test two diff url types
             ctx.replyWithPhoto(Input.fromURLStream(response))
+            ctx.reply("Here you go! Hope you like it! :). If you did not like it, react to it and i will redraw it for you!")
         })
 
     }
