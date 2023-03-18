@@ -38,7 +38,7 @@ const MemoryHelper = (ctx: Context, role: string, message: string) => {
 }
 
 const Conversation = async (ctx: Context) => {
-    console.log(ctx)
+    // console.log(ctx)
     const prompt: string = (ctx.message as any).text
 
     if (!prompt.startsWith("?")) {
@@ -48,7 +48,7 @@ const Conversation = async (ctx: Context) => {
     const prompted = prompt.replace("?", "")
 
     MemoryHelper(ctx, "user", prompted)
-    console.log(Memories)
+    // console.log(Memories)
 
     const response = await Lily.createChatCompletion({
         model: "gpt-3.5-turbo",
