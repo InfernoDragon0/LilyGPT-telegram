@@ -1,4 +1,2 @@
-const Memories = [
-
-]
+const Memories = {}
 export default Memories

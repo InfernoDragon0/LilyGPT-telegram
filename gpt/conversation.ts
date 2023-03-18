@@ -16,16 +16,33 @@ const InitialMemory = (groupname: string) => {
 let waiting = false
 const queue = []
 
-const MemoryHelper = (ctx: Context, role: string, message: string) => {
-    if (Memories.length > 8) { //to change to config later
-        Memories.shift()
+const MemoryHelper = (ctx: Context, role: string, message: string): string => {
+
+    //memories should also separate into diff chat groups
+    let key = ""
+    if (ctx.message.chat.type == "private") {
+        //use userid as key
+        key = ctx.message.from.id.toString()
+    }
+    else {
+        //use groupid as key
+        key = ctx.message.chat.id.toString()
+    }
+
+    if (!Memories[key]) { //new chat group memories
+        Memories[key] = []
+    }
+
+    if (Memories[key].length > 8) { //to change to config later
+        Memories[key].shift()
     }
     let username = ctx.from.first_name
 
     if (role == "assistant") {
         username = "Lily"
     }
-    Memories.push({ role: role, content: message, name: username })
+    Memories[key].push({ role: role, content: message, name: username })
+    return key
 }
 
 const Conversation = async (ctx: Context) => {
@@ -40,9 +57,6 @@ const Conversation = async (ctx: Context) => {
     }
     waiting = true
 
-    
-
-
     const prompted = prompt.replace("?", "").trim()
     if (prompted.length == 0) {
         ctx.replyWithSticker("CAACAgIAAxkBAAIEnWQVfj2JLDERQtzrsGkMzElncpPLAAJZEgAC6NbiEjAIkw41AAGcAi8E")
@@ -50,12 +64,12 @@ const Conversation = async (ctx: Context) => {
     }
     ctx.sendChatAction("typing")
 
-    MemoryHelper(ctx, "user", prompted)
+    const key = MemoryHelper(ctx, "user", prompted)
 
     try {
         const response = await Lily.createChatCompletion({
             model: "gpt-3.5-turbo",
-            messages: [InitialMemory((ctx.chat.type == "private" ? "private chat" : ctx.chat.title)), ...Memories],
+            messages: [InitialMemory((ctx.chat.type == "private" ? "private chat" : ctx.chat.title)), ...Memories[key]],
             max_tokens: 400,
     
         })
