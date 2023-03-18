@@ -1,0 +1,26 @@
+{
+  "name": "lilygpt-telegram",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "startonly": "node dist/index.js",
+    "start": "tsc -b && node dist/index.js"
+  },
+  "author": "InfernoDragon0",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.15.3",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "eslint": "^8.36.0",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "openai": "^3.2.1",
+    "telegraf": "^4.12.2"
+  }
+}
