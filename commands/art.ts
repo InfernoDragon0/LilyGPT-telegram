@@ -1,4 +1,5 @@
-import { Context, Input } from "telegraf";
+import { Context, Input, Markup } from "telegraf";
+import ConversationSingle from "../gpt/converse-single";
 import GenerateArt from "../gpt/generateArt";
 
 const Art = (ctx: Context) => {
@@ -7,15 +8,19 @@ const Art = (ctx: Context) => {
         console.log(commandData)
         // ctx.reply(`Please wait while i draw you a "${commandData}"`)
         ctx.telegram.sendChatAction(ctx.chat.id, "upload_photo")
-        GenerateArt(commandData, ctx.from.username).then((response) => {
+        GenerateArt(commandData, ctx.from.username).then(async (response) => {
             if (response.startsWith("Sorry")) {
                 ctx.reply(response)
                 return
             }
 
             //test two diff url types
-            ctx.replyWithPhoto(Input.fromURLStream(response))
-            ctx.reply("Here you go! Hope you like it! :). If you did not like it, react to it and i will redraw it for you!")
+            await ctx.replyWithPhoto(Input.fromURLStream(response))
+            await ConversationSingle(ctx, `I have drawn a ${commandData}, write a short quote about it.`)
+            // await ctx.reply("Do you like it?", Markup.inlineKeyboard([
+            //     Markup.button.callback("Yes", "like"),
+            //     Markup.button.callback("No", "dislike")
+            // ]))
         })
 
     }

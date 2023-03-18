@@ -29,11 +29,19 @@ bot.hears('hi', (ctx) => ctx.reply('Hey there, talk to me using ?, for example, 
 bot.command("art", Art.Art)
 bot.command("clear", clear.Clear)
 
+
+
+bot.on(message("sticker"), (ctx) => {
+    console.log("stickers")
+    console.log(ctx)
+    Conversation(ctx)
+})
 bot.on('message', (ctx) => {
     if ((ctx.message as any).text?.startsWith("?")) {
         Conversation(ctx)
     }
 })
+
 
 bot.launch();
 console.log("Bot started")
