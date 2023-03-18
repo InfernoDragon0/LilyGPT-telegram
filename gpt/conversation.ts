@@ -13,6 +13,9 @@ const InitialMemory = (groupname: string) => {
     }
 }
 
+let waiting = false
+const queue = []
+
 const MemoryHelper = (ctx: Context, role: string, message: string) => {
     if (Memories.length > 8) { //to change to config later
         Memories.shift()
@@ -26,33 +29,58 @@ const MemoryHelper = (ctx: Context, role: string, message: string) => {
 }
 
 const Conversation = async (ctx: Context) => {
-    console.log((ctx.message as any).sticker)
     const prompt: string = (ctx.message as any).text ?? (ctx.message as any).sticker.emoji
 
     // if (!prompt.startsWith("?")) {
     //     return
     // }
+    if (waiting) {
+        queue.push(ctx)
+        return
+    }
+    waiting = true
 
-    const prompted = prompt.replace("?", "")
+    
+
+
+    const prompted = prompt.replace("?", "").trim()
+    if (prompted.length == 0) {
+        ctx.replyWithSticker("CAACAgIAAxkBAAIEnWQVfj2JLDERQtzrsGkMzElncpPLAAJZEgAC6NbiEjAIkw41AAGcAi8E")
+        return
+    }
     ctx.sendChatAction("typing")
 
     MemoryHelper(ctx, "user", prompted)
-    // console.log(Memories)
 
-    const response = await Lily.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages: [InitialMemory((ctx.chat.type == "private" ? "private chat" : ctx.chat.title)), ...Memories],
-        max_tokens: 400,
+    try {
+        const response = await Lily.createChatCompletion({
+            model: "gpt-3.5-turbo",
+            messages: [InitialMemory((ctx.chat.type == "private" ? "private chat" : ctx.chat.title)), ...Memories],
+            max_tokens: 400,
+    
+        })
+    
+        if (response.status != 200) {
+            ctx.reply("Sorry, i couldn't generate a response c: " + response.status)
+        }
+        else {
+            MemoryHelper(ctx, "assistant", response.data.choices[0].message.content ?? "")
+            ctx.reply(response.data.choices[0].message.content ?? "Sorry, i couldn't generate a response c: " + response.status, { reply_to_message_id: ctx.message.message_id })
+        }
 
-    })
-    console.log(response)
-    if (response.status != 200) {
-        ctx.reply("Sorry, i couldn't generate a response c: " + response.status)
+        waiting = false
+
+        if (queue.length > 0) {
+            const next = queue.shift()
+            Conversation(next)
+            console.log("takeing data out of queue for prompt: " + (next.message as any).text ?? (next.message as any).sticker.emoji)
+        }
     }
-    else {
-        MemoryHelper(ctx, "assistant", response.data.choices[0].message.content ?? "")
-        ctx.reply(response.data.choices[0].message.content ?? "Sorry, i couldn't generate a response c: " + response.status)
+    catch (e) {
+        console.log(e)
+        ctx.reply("Sorry, i couldn't generate a response c: " + e)
     }
+    
 }
 
 export default Conversation

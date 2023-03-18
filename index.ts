@@ -32,13 +32,23 @@ bot.command("clear", clear.Clear)
 
 
 bot.on(message("sticker"), (ctx) => {
-    console.log("stickers")
-    console.log(ctx)
-    Conversation(ctx)
+    try {
+        console.log("stickers")
+        Conversation(ctx)
+    }
+    catch (e) {
+        console.log("error too fast? ")
+    }
+    
 })
 bot.on('message', (ctx) => {
-    if ((ctx.message as any).text?.startsWith("?")) {
-        Conversation(ctx)
+    try {
+        if ((ctx.message as any).text?.startsWith("?")) {
+            Conversation(ctx)
+        }
+    }
+    catch (e) {
+        console.log("error too fast? ")
     }
 })
 
