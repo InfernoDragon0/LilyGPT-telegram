@@ -68,8 +68,6 @@ const Conversation = async (ctx: Context) => {
 
     const key = MemoryHelper(ctx, "user", prompted)
 
-    console.log("before a reply")
-
     try {
         console.log("getting a reply")
         const response = await Lily.createChatCompletion({
