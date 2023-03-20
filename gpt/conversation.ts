@@ -53,6 +53,7 @@ const Conversation = async (ctx: Context) => {
     //     return
     // }
     if (waiting) {
+        console.log("pushed to queue")
         queue.push(ctx)
         return
     }
@@ -67,15 +68,18 @@ const Conversation = async (ctx: Context) => {
 
     const key = MemoryHelper(ctx, "user", prompted)
 
+    console.log("before a reply")
 
     try {
+        console.log("getting a reply")
         const response = await Lily.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: [InitialMemory((ctx.chat.type == "private" ? "private chat" : ctx.chat.title)), ...Memories[key]],
             max_tokens: 400,
     
         })
-    
+        console.log("after a reply")
+        console.log(response.status)
         if (response.status != 200) {
             ctx.reply("Sorry, i couldn't generate a response c: " + response.status)
         }
@@ -95,6 +99,7 @@ const Conversation = async (ctx: Context) => {
     catch (e) {
         console.log(e)
         ctx.reply("Sorry, i couldn't generate a response c: " + e)
+        waiting = false
     }
     
 }
