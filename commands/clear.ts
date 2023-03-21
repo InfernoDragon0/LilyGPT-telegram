@@ -1,4 +1,5 @@
 import { Context } from "telegraf";
+import ConversationSingle from "../gpt/converse-single";
 import Memories from "../gpt/memories";
 
 const Clear = (ctx: Context) => {
@@ -12,7 +13,8 @@ const Clear = (ctx: Context) => {
         key = ctx.message.chat.id.toString()
     }
     Memories[key] = []
-    ctx.reply("my brain gone")
+    ConversationSingle(ctx, "a 15 word quote about starting fresh from a clean slate, by you")
+
 }
 
 export default {Clear, "command": "clear", "description": "Clear my brain"}

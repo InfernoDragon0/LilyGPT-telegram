@@ -45,7 +45,7 @@ bot.on('message', (ctx) => {
     try {
         if ((ctx.message as any).text?.startsWith("?")) {
             //replace all ? with nothing
-            const prompt: string = (ctx.message as any).text ?? (ctx.message as any).sticker.emoji
+            const prompt: any = (ctx.message as any).text ?? (ctx.message as any).sticker.emoji
             const prompted = prompt.replaceAll("?", "").trim()
             console.log("prompted is " + prompted)
             if (prompted.length == 0) {
