@@ -8,5 +8,5 @@
       "outDir": "dist",
       "skipLibCheck": true
     },
-    "lib": ["es2015"]
+    "lib": ["ES2021"]
   }
