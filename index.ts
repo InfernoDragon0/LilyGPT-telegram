@@ -44,6 +44,13 @@ bot.on(message("sticker"), (ctx) => {
 bot.on('message', (ctx) => {
     try {
         if ((ctx.message as any).text?.startsWith("?")) {
+            //replace all ? with nothing
+            const prompt: string = (ctx.message as any).text ?? (ctx.message as any).sticker.emoji
+            const prompted = prompt.replace("?", "").trim()
+            if (prompted.length == 0) {
+                //do nothing
+                return
+            }
             Conversation(ctx)
         }
     }
