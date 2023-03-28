@@ -30,17 +30,6 @@ bot.command("art", Art.Art)
 bot.command("clear", clear.Clear)
 
 
-
-bot.on(message("sticker"), (ctx) => {
-    try {
-        console.log("stickers")
-        Conversation(ctx)
-    }
-    catch (e) {
-        console.log("error too fast? ")
-    }
-    
-})
 bot.on('message', (ctx) => {
     try {
         if ((ctx.message as any).text?.startsWith("?")) {
