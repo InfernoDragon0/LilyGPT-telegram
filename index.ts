@@ -12,6 +12,7 @@ import Start from './commands/start';
 // OpenAI
 import Conversation from './gpt/conversation';
 import clear from './commands/clear';
+import SuperLily from './gpt/superLily';
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 bot.telegram.setMyCommands([
@@ -44,6 +45,18 @@ bot.on('message', (ctx) => {
             Conversation(ctx)
         }
         //if starts with !, call superlily instead
+        if ((ctx.message as any).text?.startsWith("!")) {
+            //replace all ? with nothing
+            const prompt: any = (ctx.message as any).text ?? (ctx.message as any).sticker.emoji
+            const prompted = prompt.replaceAll("!", "").trim()
+            console.log("prompted is " + prompted)
+            if (prompted.length == 0) {
+                //do nothing
+                return
+            }
+            SuperLily(ctx)
+            
+        }
         
         
     }
