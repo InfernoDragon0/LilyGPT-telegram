@@ -6,7 +6,7 @@ import { ChatAgent, AgentExecutor } from "langchain/agents"
 
 const SuperLily = async (ctx: Context) => {
     const prompt: string = (ctx.message as any).text ?? (ctx.message as any).sticker.emoji
-    const prompted = prompt.replace("!", "").trim()
+    const prompted = prompt.replace("!", "").replace("?", "").trim()
 
     // Define the list of tools the agent can use
     console.log("prompt received for superlily: " + prompted)
@@ -23,7 +23,7 @@ const SuperLily = async (ctx: Context) => {
     executor.returnIntermediateSteps = true;
     executor.maxIterations = 5;
     
-
+    ctx.reply("Please give me a moment to think about your request.", {reply_to_message_id: ctx.message.message_id})
     const responseG = await executor.call(
         {input: prompted}
     );
