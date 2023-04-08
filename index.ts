@@ -43,6 +43,9 @@ bot.on('message', (ctx) => {
             }
             Conversation(ctx)
         }
+        //if starts with !, call superlily instead
+        
+        
     }
     catch (e) {
         console.log("error too fast? ")

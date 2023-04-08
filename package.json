@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "dotenv": "^16.0.3",
+    "langchain": "^0.0.50",
     "openai": "^3.2.1",
     "telegraf": "^4.12.2"
   }
