@@ -106,19 +106,22 @@ const Conversation = async (ctx: Context) => {
             const pattern = /\[.*?\]/
             const tags = response.data.choices[0].message.content.match(pattern)
             let reply = response.data.choices[0].message.content
-            if (tags.length > 0) {
-                //get the tag
-                
-                const tag = tags[0]
-                reply = response.data.choices[0].message.content.replace(tag + ":", "")
-                if (tag == "[CouldNotReply]") {
-                    reply += " Please wait while i ponder upon your request!"
-
-                    //call superlily
-                    SuperLily(ctx)
+            if (tags) {
+                if (tags.length > 0) {
+                    //get the tag
+                    
+                    const tag = tags[0]
+                    reply = response.data.choices[0].message.content.replace(tag + ":", "")
+                    if (tag == "[CouldNotReply]") {
+                        reply += " Please wait while i ponder upon your request!"
+    
+                        //call superlily
+                        SuperLily(ctx)
+                    }
+    
                 }
-
             }
+            
 
             ctx.reply(reply ?? "Sorry, i couldn't generate a response c: " + response.status, { reply_to_message_id: ctx.message.message_id })
         }
