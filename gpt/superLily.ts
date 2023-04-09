@@ -1,7 +1,6 @@
 import { Context } from "telegraf";
 import Lily from "./lily";
 import { ChatOpenAI } from "langchain/chat_models"
-import { BingSerpAPI, Calculator } from "langchain/tools"
 import { ChatAgent, AgentExecutor } from "langchain/agents"
 import { CallbackManager } from "langchain/callbacks";
 import { SuperLilyCallbackHandler } from "./superLilyCallbacks";

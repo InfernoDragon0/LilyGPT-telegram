@@ -2,7 +2,7 @@ import { Tool } from "langchain/agents"
 
 class SuperMathAPI extends Tool {
     name = "calculator"
-    description = "to calculate math expressions, input is the expression for the calculation. Optionally include precision=x where x is the significant figures"
+    description = "to calculate math expressions, input is the expression for the calculation. Optionally include precision=x where x is the significant figures."
 
     async _call(arg: string): Promise<string> {
         const encoded = encodeURIComponent(arg)
