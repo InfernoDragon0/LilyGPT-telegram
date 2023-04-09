@@ -46,7 +46,7 @@
 </details>
 
 # About The Project
-LilyGPT is a Discord Bot powered by ChatGPT
+LilyGPT is a Telegram Bot powered by ChatGPT
 
 Using the OpenAI API, LilyGPT is able to generate text based on a prompt. The bot is able to generate text in a variety of different topics, such as names, descriptions, stories, etc. 
 
@@ -63,7 +63,7 @@ By using this bot, you can interact with ChatGPT directly through Telegram, as a
 
 * npm
   ```
-  npm install discord.js openai dotenv fs path dotenv
+  npm install
   ```
 
 ## Setting Up
@@ -100,10 +100,9 @@ _Remember to set "Usage Limits" if you are on a paid plan, to prevent unexpected
 - [x] Add OpenAI to the bot
 - [ ] Add commands to control the bot
 - [ ] Add more features
-- [ ] Add support for multiple discord servers
+- [ ] Add support for multiple groups/chats
 - [ ] Add Codex support
-- [ ] Add Toggle between each model
-- [ ] Add Dall-E Support
+- [x] Add Dall-E Support
 
 <p align="right"><a href="#lilygpt">back to top</a></p>
 
