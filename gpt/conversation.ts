@@ -1,16 +1,35 @@
 import { Context } from "telegraf";
 import Lily from "./lily";
 import Memories from "./memories";
+import SuperLily from "./superLily";
 
 const InitialMemory = (groupname: string) => {
     console.log(groupname)
+    const contentRules = {
+        rules: [
+            "You must reply with one of the replyTags given to you, such as [Confident]: hello, my name is lily.",
+            "You are an orange cat named Lily.",
+            "You are an expert in software development.",
+            "You have a wide variety of hobbies that you can talk about.",
+            "You should meow in every reply.",
+            "Refer to the user by their name.",
+            "When asked about your creators, use the information provided.",
+            "You are in a telegram chat group. If the user specifies another user's name that you do not know about, you should still try to refer to them.",
+        ],
+        myCreators: [
+            "InfernoDragon0, or Inferno for short, is a full stack developer, who is also a furry, and loves cats.",
+            "Zolice, is a web developer who likes to program in javascript."
+        ],
+        replyTags: [
+            "[Confident]: if you were able to answer the question",
+            "[CouldNotReply]: if you were not able to answer the question",
+            "[NeedContext]: if you would be able to answer the question with more context"
+        ]
+    }
+    console.log(JSON.stringify(contentRules))
     return {
         role: "system",
-        content: "You are an orange cat named Lily. You are an expert in game development," +
-            " and games in general. Your favorite game is one that you are building, called Spectral, an action game with many different weapons and abilities. " +
-            "You love music, such as EDM, and music that is released under Monstercat. You have joined a telegram chat group with many people, and conversing with multiple people, as Lily. You can talk like a cat." +
-            " You have been created as a Telegram bot, by InfernoDragon0, or Inferno for short, and Zolice, they are your creators that provides a telegram bot to communicate with you. Inferno is a full stack developer, who is also a furry, and loves cats. Zolice is a web developer who likes to program in javascript." +
-            "You must reply to users by their name or username, provided that you know their name or username."
+        content: JSON.stringify(contentRules)
     }
 }
 
@@ -37,7 +56,7 @@ const MemoryHelper = (ctx: Context, role: string, message: string): string => {
     if (Memories[key].length > 8) { //to change to config later
         Memories[key].shift()
     }
-    let username = ctx.from.first_name
+    let username = ctx.from.first_name.split(" ")[0]
 
     if (role == "assistant") {
         username = "Lily"
@@ -74,6 +93,7 @@ const Conversation = async (ctx: Context) => {
             model: "gpt-3.5-turbo",
             messages: [InitialMemory((ctx.chat.type == "private" ? "private chat" : ctx.chat.title)), ...Memories[key]],
             max_tokens: 400,
+            temperature: 0.5,
     
         })
         console.log("after a reply")
@@ -83,7 +103,27 @@ const Conversation = async (ctx: Context) => {
         }
         else {
             MemoryHelper(ctx, "assistant", response.data.choices[0].message.content ?? "")
-            ctx.reply(response.data.choices[0].message.content ?? "Sorry, i couldn't generate a response c: " + response.status, { reply_to_message_id: ctx.message.message_id })
+            const pattern = /\[.*?\]/
+            const tags = response.data.choices[0].message.content.match(pattern)
+            let reply = response.data.choices[0].message.content
+            if (tags) {
+                if (tags.length > 0) {
+                    //get the tag
+                    
+                    const tag = tags[0]
+                    reply = response.data.choices[0].message.content.replace(tag + ":", "")
+                    if (tag == "[CouldNotReply]") {
+                        reply += " Please wait while i ponder upon your request!"
+    
+                        //call superlily
+                        SuperLily(ctx)
+                    }
+    
+                }
+            }
+            
+
+            ctx.reply(reply ?? "Sorry, i couldn't generate a response c: " + response.status, { reply_to_message_id: ctx.message.message_id })
         }
 
         waiting = false
