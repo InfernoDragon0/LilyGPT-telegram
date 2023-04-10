@@ -2,7 +2,7 @@ import { Tool } from "langchain/agents"
 
 class GoogleCustomSearchAPI extends Tool {
     name = "google-search"
-    description = "a search engine. useful for when you need to answer questions about current events. input should be a search query."
+    description = "a search engine. useful for when you need to search for links to answer about current events. input should be a search query."
     
     key: string
     searchid: string
