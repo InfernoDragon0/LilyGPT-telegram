@@ -52,6 +52,15 @@ Using the OpenAI API, LilyGPT is able to generate text based on a prompt. The bo
 
 By using this bot, you can interact with ChatGPT directly through Telegram, as a means of convenience and/or entertainment. 
 
+## GPT 3.5 Compatible
+This bot can be run on GPT 3.5, and utilizes Langchain to provide a similar experience to GPT 4. However, the responses may break from time to time due to 3.5 not wanting to follow instructions
+
+The current tools available for Lily are
+- Google Search (will use the top 3 results, using official Custom Search API)
+- Web Scraper (will scrape websites for information required)
+- Math (Using MathJS API)
+- Time (Using Time API)
+
 ## Built With
 ![Telegraf](https://img.shields.io/badge/telegrafjs-5865F2?style=for-the-badge&logo=telegraf&logoColor=FFFFFF)
 ![openai](https://img.shields.io/badge/openai-000000?style=for-the-badge&logo=openai&logoColor=FFFFFF)
